@@ -49,7 +49,7 @@ class com.judgy.cph.CPHMission_Foulfellow extends CPHMission_Base
 		ldbText = LDBFormat.LDBGetText(50002, 30958);
 		ldbText = CPHMissionTextFilter.filterResolveGoalText(ldbText);
 		
-		insertAnswer(ldbText, CLOSE_TAG, true);
+		insertAnswer(ldbText, CLOSE_TAG, false);
 		
 		// computer 3 
 		// 1st screen
