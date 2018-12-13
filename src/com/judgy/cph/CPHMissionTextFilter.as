@@ -24,6 +24,14 @@ class com.judgy.cph.CPHMissionTextFilter
 			return text;
 	}
 	
+	public static function filterGameActionText(text:String) {
+		var textSplit:Array = text.split("{gameactiononplayer");
+		if (textSplit.length > 0)
+			return textSplit[0];
+		else
+			return text;
+	}
+	
 	public static function filterHiddenAnswerText(text:String) {
 		var textSplit:Array = text.split("{hide}");
 		if (textSplit.length > 0)

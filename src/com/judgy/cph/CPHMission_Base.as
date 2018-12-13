@@ -1,5 +1,9 @@
 import com.GameInterface.DistributedValue;
 import com.GameInterface.ComputerPuzzleIF;
+import com.GameInterface.Game.Dynel;
+import com.GameInterface.MathLib.Vector3;
+import com.GameInterface.Puzzle;
+import com.Utils.ID32;
 
 class com.judgy.cph.CPHMission_Base
 {
@@ -7,6 +11,9 @@ class com.judgy.cph.CPHMission_Base
 	private var DV_enabled:DistributedValue
 	
 	private var textAnswersMap:Array = new Array(); //entry format : [TEXT, ANSWER, NEED_QUESTIONS_LOADED]
+	private var keypadAnswersMap:Array = new Array(); //entry format : [TYPE, ID, PLAYFIELD, POSITION, ANSWER]
+	
+	private var keypadWaitInterval:Number = -1;
 	
 	private static var CLOSE_TAG = "{CLOSE}";
 	
@@ -23,6 +30,8 @@ class com.judgy.cph.CPHMission_Base
 	
 	public function Unload() {
 		DV_enabled.SignalChanged.Disconnect(SlotEnabledChanged, this);
+		
+		clearInterval(keypadWaitInterval);
 	}
 	
 	private function SlotEnabledChanged(dv:DistributedValue) {
@@ -40,18 +49,22 @@ class com.judgy.cph.CPHMission_Base
 		return "Base";
 	}
 	
-	private function insertAnswer(text:String, answer:String, needQuestionsLoaded:Boolean) {
+	private function addTextAnswer(text:String, answer:String, needQuestionsLoaded:Boolean) {
 		textAnswersMap.push([text, answer, needQuestionsLoaded]);
 	}
 	
-	public function TryHandle(text:String) {
+	private function addKeypadAnswer(type:Number, id:String, playfieldID:Number, position:Vector3, answer:String) {
+		keypadAnswersMap.push([type, id, playfieldID, position, answer]);
+	}
+	
+	public function TryHandleCP(text:String) {
 		if (m_enabled)
-			return Handle(text);
+			return HandleCP(text);
 		else
 			return false;
 	}
 	
-	private function Handle(text:String) {
+	private function HandleCP(text:String) {
 		for (var i = 0; i < textAnswersMap.length; i++) {
 			var entry = textAnswersMap[i];
 			if (text.indexOf(entry[0], 0) != -1) {
@@ -66,5 +79,44 @@ class com.judgy.cph.CPHMission_Base
 			}
 		}
 		return false;
+	}
+	
+	public function TryHandleKeypad(dynelID:ID32) {
+		if (m_enabled)
+			return HandleKeypad(dynelID);
+		else
+			return false;
+	}
+	
+	private function HandleKeypad(dynelID:ID32) {
+		for (var i = 0; i < keypadAnswersMap.length; i++) {
+			var entry:Array = keypadAnswersMap[i];
+			var dyn:Dynel = Dynel.GetDynel(dynelID);
+			//com.GameInterface.Chat.SetChatInput("pos : " + dyn.GetPosition().x + "," + dyn.GetPosition().y + "," + dyn.GetPosition().z);
+			//com.GameInterface.Chat.SignalShowFIFOMessage.Emit("Type:" + dyn.GetID().GetType() + " stat112:" + dyn.GetStat(112) + " playfield:" + dyn.GetPlayfieldID() + " pos:" + dyn.GetPosition().x + "," + dyn.GetPosition().y + "," + dyn.GetPosition().z);
+			if (entry[0] == dyn.GetID().GetType() && string(dyn.GetStat(112)) == entry[1] && entry[2] == dyn.GetPlayfieldID() && Math.abs(Vector3.Sub(entry[3], dyn.GetPosition()).Len()) < 0.25) {
+				//cursor is on a quest dynel. Now we need to wait for the keypad interface to show up.
+				if (keypadWaitInterval != -1) {
+					clearInterval(keypadWaitInterval);
+					keypadWaitInterval = -1;
+				}
+				keypadWaitInterval = setInterval(WaitKeypadAndAnswer, 100, entry[4]);
+				return true;
+			}
+		}
+		//new dynel doesn't match, clear interval if it exists
+		if (keypadWaitInterval != -1) {
+			clearInterval(keypadWaitInterval);
+			keypadWaitInterval = -1;
+		}
+		return false;
+	}
+	
+	private function WaitKeypadAndAnswer(answer:String) {
+		if (!_root.keypad)
+			return;
+			
+		Puzzle.SendMessageToServer(answer);
+		clearInterval(keypadWaitInterval);
 	}
 }
