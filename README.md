@@ -1,5 +1,5 @@
 # SWL-ComputerPuzzleHelper
-Automatic answer on computers.
+Automatic answer on computers and keypads.
 
 # Commands
 `/option CPH_Enabled <true|false>` Enable or disable the addon. (Default : `true`)
