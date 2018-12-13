@@ -10,7 +10,7 @@ class com.judgy.cph.CPHMission_Base
 	private var m_enabled:Boolean = true;
 	private var DV_enabled:DistributedValue
 	
-	private var textAnswersMap:Array = new Array(); //entry format : [TEXT, ANSWER, NEED_QUESTIONS_LOADED]
+	private var textAnswersMap:Array = new Array(); //entry format : [TEXT, ANSWER, NEED_QUESTIONS_LOADED, ADDITIONAL_CHECK_FUNCTION]
 	private var keypadAnswersMap:Array = new Array(); //entry format : [TYPE, ID, PLAYFIELD, POSITION, ANSWER]
 	
 	private var keypadWaitInterval:Number = -1;
@@ -49,8 +49,8 @@ class com.judgy.cph.CPHMission_Base
 		return "Base";
 	}
 	
-	private function addTextAnswer(text:String, answer:String, needQuestionsLoaded:Boolean) {
-		textAnswersMap.push([text, answer, needQuestionsLoaded]);
+	private function addTextAnswer(text:String, answer:String, needQuestionsLoaded:Boolean, additionalCheckFunction:Function) {
+		textAnswersMap.push([text, answer, needQuestionsLoaded, additionalCheckFunction]);
 	}
 	
 	private function addKeypadAnswer(type:Number, id:String, playfieldID:Number, position:Vector3, answer:String) {
@@ -69,6 +69,8 @@ class com.judgy.cph.CPHMission_Base
 			var entry = textAnswersMap[i];
 			if (text.indexOf(entry[0], 0) != -1) {
 				if (entry[2] == true && ComputerPuzzleIF.GetQuestions().length > 0 || entry[2] == false) {
+					if (entry[3] != undefined && entry[3]() == false)
+						continue;
 					if (entry[1].indexOf(CLOSE_TAG) == 0) {
 						ComputerPuzzleIF.SignalClose.Emit();
 					}

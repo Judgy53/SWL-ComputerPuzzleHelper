@@ -3,6 +3,7 @@ import com.Utils.Archive;
 import com.Utils.ID32;
 import com.GameInterface.ComputerPuzzleIF;
 import com.judgy.cph.CPHMission_Base;
+import com.judgy.cph.CPHMission_FogAndMirrors;
 import com.judgy.cph.CPHMission_Foulfellow;
 import com.judgy.cph.CPHMission_Wetware;
 
@@ -28,6 +29,7 @@ class com.judgy.cph.CPHMod {
 		//Create mission handlers
 		m_missionHandlers.push(new CPHMission_Foulfellow());
 		m_missionHandlers.push(new CPHMission_Wetware());
+		m_missionHandlers.push(new CPHMission_FogAndMirrors());
     }
 	
 	public function Load() {
