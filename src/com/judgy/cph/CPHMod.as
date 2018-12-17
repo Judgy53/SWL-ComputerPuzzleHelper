@@ -41,6 +41,8 @@ class com.judgy.cph.CPHMod {
 	public function OnUnload() {		
 		ComputerPuzzleIF.SignalTextUpdated.Disconnect(SlotTextUpdated, this);
 		
+		com.Utils.GlobalSignal.SignalCrosshairTargetUpdated.Disconnect(SlotCrosshairTargetUpdated, this);
+		
 		//unload mission handlers
 		while (m_missionHandlers.length > 0)
 			m_missionHandlers.shift().Unload();
