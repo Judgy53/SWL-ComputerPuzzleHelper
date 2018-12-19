@@ -6,11 +6,32 @@ import com.Utils.LDBFormat;
 class com.judgy.cph.CPHMission_Wetware extends CPHMission_Base
 {
 	
-	public function Load(enabled:Boolean) {
-		super.Load(enabled);
-		
+	private function DoLoad() {
 		var ldbText:String;
 		var ldbAnswer:String;
+		
+		// outside hospital
+			// 1st computer
+				// 1st screen
+		ldbText = LDBFormat.LDBGetText(50002, 30759);
+		ldbText = CPHMissionTextFilter.filterIntroText(ldbText);
+		ldbText = CPHMissionTextFilter.filterHelpQuitText(ldbText);
+		
+		addTextAnswer(ldbText, "2", true);
+		
+				// 2nd screen
+		ldbText = LDBFormat.LDBGetText(50002, 30765);
+		ldbText = CPHMissionTextFilter.filterHelpQuitText(ldbText);
+		ldbAnswer = LDBFormat.LDBGetText(50001, 20330);
+		ldbAnswer = CPHMissionTextFilter.filterHiddenAnswerText(ldbAnswer);
+		
+		addTextAnswer(ldbText, ldbAnswer, false);
+		
+				// 3rd screen
+		ldbText = LDBFormat.LDBGetText(50002, 30762);
+		ldbText = CPHMissionTextFilter.filterHelpQuitText(ldbText);
+		
+		addTextAnswer(ldbText, "1", true);
 		
 		// inside hospital
 			// 1st keypad
@@ -95,4 +116,11 @@ class com.judgy.cph.CPHMission_Wetware extends CPHMission_Base
 		return "Wetware";
 	}
 	
+	public function IsValidPlayfield(playfield:Number) {
+		return playfield == 6770;
+	}
+	
+	public function GetQuestID() {
+		return 3820;
+	}
 }

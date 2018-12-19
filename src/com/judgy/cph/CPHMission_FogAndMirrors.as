@@ -7,9 +7,7 @@ import com.Utils.LDBFormat;
 class com.judgy.cph.CPHMission_FogAndMirrors extends CPHMission_Base
 {
 	
-	public function Load(enabled:Boolean) {
-		super.Load(enabled);
-		
+	public function DoLoad() {
 		var ldbText:String;
 		var ldbAnswer:String;
 		
@@ -98,4 +96,11 @@ class com.judgy.cph.CPHMission_FogAndMirrors extends CPHMission_Base
 		return "FogAndMirrors";
 	}
 	
+	public function IsValidPlayfield(playfield:Number) {
+		return playfield == 1100 || playfield == 7290;
+	}
+	
+	public function GetQuestID() {
+		return 4135;
+	}
 }

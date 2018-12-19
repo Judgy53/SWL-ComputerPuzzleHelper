@@ -5,9 +5,7 @@ import com.Utils.LDBFormat;
 class com.judgy.cph.CPHMission_Foulfellow extends CPHMission_Base
 {
 	
-	public function Load(enabled:Boolean) {
-		super.Load(enabled);
-		
+	public function DoLoad() {
 		var ldbText:String;
 		var ldbAnswer:String;
 		
@@ -100,5 +98,13 @@ class com.judgy.cph.CPHMission_Foulfellow extends CPHMission_Base
 	
 	public function GetDVName() {
 		return "Foulfellow";
+	}
+	
+	public function IsValidPlayfield(playfield:Number) {
+		return false;
+	}
+	
+	public function GetQuestID() {
+		return 4072;
 	}
 }

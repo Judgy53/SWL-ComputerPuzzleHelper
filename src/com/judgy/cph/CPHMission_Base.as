@@ -10,6 +10,8 @@ class com.judgy.cph.CPHMission_Base
 	private var m_enabled:Boolean = true;
 	private var DV_enabled:DistributedValue
 	
+	private var m_loaded:Boolean = false;
+	
 	private var textAnswersMap:Array = new Array(); //entry format : [TEXT, ANSWER, NEED_QUESTIONS_LOADED, ADDITIONAL_CHECK_FUNCTION]
 	private var keypadAnswersMap:Array = new Array(); //entry format : [TYPE, ID, PLAYFIELD, POSITION, ANSWER]
 	
@@ -19,14 +21,19 @@ class com.judgy.cph.CPHMission_Base
 	
 	public function CPHMission_Base() {
 		DV_enabled = DistributedValue.Create("CPH_" + GetDVName());
+		DV_enabled.SignalChanged.Connect(SlotEnabledChanged, this);
 	}
 	
 	public function Load(enabled:Boolean) {
-		m_enabled = enabled;
 		DV_enabled.SetValue(enabled);
 		
-		DV_enabled.SignalChanged.Connect(SlotEnabledChanged, this);
+		if(m_loaded == false) {
+			DoLoad();
+			m_loaded = true;
+		}
 	}
+	
+	private function DoLoad() {}
 	
 	public function Unload() {
 		DV_enabled.SignalChanged.Disconnect(SlotEnabledChanged, this);
@@ -47,6 +54,14 @@ class com.judgy.cph.CPHMission_Base
 		
 	public function GetDVName() {
 		return "Base";
+	}
+	
+	public function IsValidPlayfield(playfield:Number) {
+		return false;
+	}
+	
+	public function GetQuestID() {
+		return -1;
 	}
 	
 	private function addTextAnswer(text:String, answer:String, needQuestionsLoaded:Boolean, additionalCheckFunction:Function) {
