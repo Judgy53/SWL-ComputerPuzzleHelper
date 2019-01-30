@@ -25,12 +25,12 @@ class com.judgy.cph.CPHMission_Base
 	}
 	
 	public function Load(enabled:Boolean) {
-		this.textAnswersMap = new Array();
-		this.keypadAnswersMap = new Array();
-		
 		DV_enabled.SetValue(enabled);
 		
-		if(this.m_loaded == false) {
+		if (this.m_loaded == false) {
+			textAnswersMap = new Array();
+			keypadAnswersMap = new Array();
+			
 			DoLoad();
 			this.m_loaded = true;
 		}

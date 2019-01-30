@@ -90,7 +90,7 @@ class com.judgy.cph.CPHMod {
 		if (m_targetSlotEnabled)
 			return;
 		
-		//UtilsBase.PrintChatText("TargetSlot Enabled");
+		//com.GameInterface.UtilsBase.PrintChatText("TargetSlot Enabled");
 			
 		GlobalSignal.SignalCrosshairTargetUpdated.Connect(SlotCrosshairTargetUpdated, this);
 		m_targetSlotEnabled = true;
@@ -100,7 +100,7 @@ class com.judgy.cph.CPHMod {
 		if (!m_targetSlotEnabled)
 			return;
 		
-		//UtilsBase.PrintChatText("TargetSlot Disabled");
+		//com.GameInterface.UtilsBase.PrintChatText("TargetSlot Disabled");
 		
 		GlobalSignal.SignalCrosshairTargetUpdated.Disconnect(SlotCrosshairTargetUpdated, this);
 		m_targetSlotEnabled = false;
