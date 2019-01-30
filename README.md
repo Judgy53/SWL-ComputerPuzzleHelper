@@ -8,6 +8,8 @@ Automatic answer on computers and keypads.
 
 `/option CPH_Wetware <true|false>` Enable or disable automatic answers for the mission "Wetware". (Default : `true`)
 
+`/option CPH_KMCode <true|false>` Enable or disable automatic answers for the mission "The Kingsmouth Code". (Default : `true`)
+
 `/option CPH_FogAndMirrors <true|false>` Enable or disable automatic answers for the mission "Fog And Mirrors". (Default : `true`)
 
 

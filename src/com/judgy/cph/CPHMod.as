@@ -1,3 +1,4 @@
+import com.judgy.cph.CPHMission_KingsmouthCode;
 import mx.utils.Delegate;
 import com.Utils.Archive;
 import com.Utils.ID32;
@@ -34,6 +35,7 @@ class com.judgy.cph.CPHMod {
 		m_missionHandlers.push(new CPHMission_Foulfellow());
 		m_missionHandlers.push(new CPHMission_Wetware());
 		m_missionHandlers.push(new CPHMission_FogAndMirrors());
+		m_missionHandlers.push(new CPHMission_KingsmouthCode());
     }
 	
 	public function Load() {
@@ -116,7 +118,7 @@ class com.judgy.cph.CPHMod {
 			setTimeout(Delegate.create(this, DelayedPlayfieldChanged), 500);
 			return;
 		}
-		///UtilsBase.PrintChatText("Playfield Changed : " + m_playfield);
+		//com.GameInterface.UtilsBase.PrintChatText("Playfield Changed : " + m_playfield);
 		for (var i = 0; i < m_missionHandlers.length; i++) {
 			if (m_missionHandlers[i].IsValidPlayfield(m_playfield) && QuestsBase.IsMissionActive(m_missionHandlers[i].GetQuestID())) {
 				EnableTargetSlot();
@@ -126,7 +128,7 @@ class com.judgy.cph.CPHMod {
 	}
 	
 	private function SlotTaskAdded(questID:Number) {
-		//UtilsBase.PrintChatText("New Quest : " + questID);
+		//com.GameInterface.UtilsBase.PrintChatText("New Quest : " + questID + " [" + QuestsBase.GetQuest(questID).m_MissionName + "]");
 		for (var i = 0; i < m_missionHandlers.length; i++) {
 			if (questID == m_missionHandlers[i].GetQuestID() && m_missionHandlers[i].IsValidPlayfield(m_playfield)) {
 				EnableTargetSlot();
