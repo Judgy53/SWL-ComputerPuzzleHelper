@@ -85,6 +85,7 @@ class com.judgy.cph.CPHMission_Base
 	private function HandleCP(text:String) {
 		for (var i = 0; i < this.textAnswersMap.length; i++) {
 			var entry = this.textAnswersMap[i];
+			//com.GameInterface.UtilsBase.PrintChatText(this.GetDVName() + ": " + text.indexOf(entry[0], 0));
 			if (text.indexOf(entry[0], 0) != -1) {
 				if (entry[2] == true && ComputerPuzzleIF.GetQuestions().length > 0 || entry[2] == false) {
 					if (entry[3] != undefined && entry[3]() == false)
@@ -93,7 +94,10 @@ class com.judgy.cph.CPHMission_Base
 						ComputerPuzzleIF.SignalClose.Emit();
 					}
 					else
-						ComputerPuzzleIF.AcceptPlayerInput(entry[1]);	
+					{
+						//com.GameInterface.UtilsBase.PrintChatText("Sending \"" + entry[1] + "\"");
+						ComputerPuzzleIF.AcceptPlayerInput(entry[1]);
+					}
 					return true;
 				}
 			}

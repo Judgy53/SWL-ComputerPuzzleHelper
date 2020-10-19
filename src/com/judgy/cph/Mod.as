@@ -1,3 +1,4 @@
+import com.judgy.cph.CPHMission_Broadcast;
 import com.judgy.cph.CPHMission_KingsmouthCode;
 import mx.utils.Delegate;
 import com.Utils.Archive;
@@ -12,7 +13,7 @@ import com.judgy.cph.CPHMission_FogAndMirrors;
 import com.judgy.cph.CPHMission_Foulfellow;
 import com.judgy.cph.CPHMission_Wetware;
 
-class com.judgy.cph.CPHMod {
+class com.judgy.cph.Mod {
 	private var m_swfRoot:MovieClip; 
 	
 	private var m_missionHandlers:Array = new Array();
@@ -20,7 +21,7 @@ class com.judgy.cph.CPHMod {
 	private var m_targetSlotEnabled:Boolean = false;
 	
 	public static function main(swfRoot:MovieClip) {
-		var s_app = new CPHMod(swfRoot);
+		var s_app = new Mod(swfRoot);
 		
 		swfRoot.onLoad = function() { s_app.Load(); };
 		swfRoot.onUnload = function() { s_app.Unload(); };
@@ -28,7 +29,7 @@ class com.judgy.cph.CPHMod {
 		swfRoot.OnModuleDeactivated = function() { return s_app.SaveConfig(); };
 	}
 	
-	public function CPHMod(swfRoot:MovieClip) {
+	public function Mod(swfRoot:MovieClip) {
 		m_swfRoot = swfRoot;
 		
 		//Create mission handlers
@@ -36,9 +37,10 @@ class com.judgy.cph.CPHMod {
 		m_missionHandlers.push(new CPHMission_Wetware());
 		m_missionHandlers.push(new CPHMission_FogAndMirrors());
 		m_missionHandlers.push(new CPHMission_KingsmouthCode());
+		m_missionHandlers.push(new CPHMission_Broadcast());
     }
 	
-	public function Load() {
+	public function Load():Void {
 		WaypointInterface.SignalPlayfieldChanged.Connect(SlotPlayfieldChanged, this);
 		SlotPlayfieldChanged();
 		
@@ -54,7 +56,7 @@ class com.judgy.cph.CPHMod {
 		ComputerPuzzleIF.SignalTextUpdated.Connect(SlotTextUpdated, this);
 	}
 	
-	public function OnUnload() {		
+	public function OnUnload():Void {		
 		WaypointInterface.SignalPlayfieldChanged.Disconnect(SlotPlayfieldChanged, this);
 		ComputerPuzzleIF.SignalTextUpdated.Disconnect(SlotTextUpdated, this);
 		DisableTargetSlot();
@@ -68,14 +70,14 @@ class com.judgy.cph.CPHMod {
 			m_missionHandlers.shift().Unload();
 	}
 	
-	public function LoadConfig(config:Archive) {
+	public function LoadConfig(config:Archive):Void {
 		for (var i = 0; i < m_missionHandlers.length; i++) {
 			var handler:CPHMission_Base = m_missionHandlers[i];
 			handler.Load(config.FindEntry(handler.GetDVName(), true));
 		}
 	}
 	
-	public function SaveConfig() {	
+	public function SaveConfig():Archive {	
 		var archive: Archive = new Archive();
 		
 		for (var i = 0; i < m_missionHandlers.length; i++) {
@@ -86,7 +88,7 @@ class com.judgy.cph.CPHMod {
 		return archive;
 	}
 	
-	private function EnableTargetSlot() {
+	private function EnableTargetSlot():Void {
 		if (m_targetSlotEnabled)
 			return;
 		
@@ -96,7 +98,7 @@ class com.judgy.cph.CPHMod {
 		m_targetSlotEnabled = true;
 	}
 	
-	private function DisableTargetSlot() {
+	private function DisableTargetSlot():Void {
 		if (!m_targetSlotEnabled)
 			return;
 		
@@ -106,13 +108,13 @@ class com.judgy.cph.CPHMod {
 		m_targetSlotEnabled = false;
 	}
 	
-	private function SlotPlayfieldChanged() {
+	private function SlotPlayfieldChanged():Void {
 		DisableTargetSlot();
 		
 		DelayedPlayfieldChanged();
 	}
 	
-	private function DelayedPlayfieldChanged() {
+	private function DelayedPlayfieldChanged():Void {
 		m_playfield = Character.GetClientCharacter().GetPlayfieldID();
 		if (m_playfield == 0) {
 			setTimeout(Delegate.create(this, DelayedPlayfieldChanged), 500);
@@ -127,7 +129,7 @@ class com.judgy.cph.CPHMod {
 		}
 	}
 	
-	private function SlotTaskAdded(questID:Number) {
+	private function SlotTaskAdded(questID:Number):Void {
 		//com.GameInterface.UtilsBase.PrintChatText("New Quest : " + questID + " [" + QuestsBase.GetQuest(questID).m_MissionName + "]");
 		for (var i = 0; i < m_missionHandlers.length; i++) {
 			if (questID == m_missionHandlers[i].GetQuestID() && m_missionHandlers[i].IsValidPlayfield(m_playfield)) {
@@ -137,14 +139,15 @@ class com.judgy.cph.CPHMod {
 		}
 	}
 	
-	private function SlotTextUpdated() {
+	private function SlotTextUpdated():Void {
+		//com.GameInterface.UtilsBase.PrintChatText("New Text : " + ComputerPuzzleIF.GetText());
 		for (var i = 0; i < m_missionHandlers.length; i++) {
 			if (QuestsBase.IsMissionActive(m_missionHandlers[i].GetQuestID()) && m_missionHandlers[i].TryHandleCP(ComputerPuzzleIF.GetText()))
 				return;
 		}
 	}
 	
-	private function SlotCrosshairTargetUpdated(dynelID:ID32) {
+	private function SlotCrosshairTargetUpdated(dynelID:ID32):Void {
 		if (dynelID == undefined || dynelID.GetType() == 0)
 			return;
 			
